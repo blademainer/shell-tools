@@ -5,14 +5,7 @@ PROGNAME=test
 PIDFILE=$DIR/$PROGNAME.pid
 OUTFILE=$DIR/$PROGNAME.out
 
-#run() {
-#    nohup $DIR/rule1.sh>>$OUTFILE 2>&1 & echo $!>$PIDFILE
-#}
 run() {
-#    java -classpath target/spark-demo-1.0-SNAPSHOT.jar \
-#    com.xunlei.demo.DeleteHdfsFile \
-#    hdfs://vipvm0061:9000/BehaviorAnalysisRuleOneToHBaseCheckPoint/
-
     nohup \
     `echo 'test'>test.tmp` \
     >>$OUTFILE 2>&1 & echo $!>$PIDFILE
