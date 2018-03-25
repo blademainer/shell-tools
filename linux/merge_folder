@@ -1,0 +1,39 @@
+#!/bin/sh
+
+origin_folder="$1"
+target_folder="$2"
+
+[ -z "$origin_folder" -o  ! -d "$origin_folder" -o -z "$target_folder" -o ! -d "$target_folder" ] && echo "origin_folder or target_folder empty!" && exit 0
+
+origin_folder=`echo "${origin_folder%/*}"`
+target_folder=`echo "${target_folder%/*}"`
+echo "origin_folder===$origin_folder"
+echo "target_folder===$target_folder"
+
+find "$origin_folder" -type f -size +10k > origin.files
+
+cat origin.files | while read f; do
+  echo "processing: $f" # a/b/c/f
+  subFile="`echo ${f#*/}`" # b/c/f
+  #echo "subFile=${subFile}"
+  subDir="`echo ${subFile%/*}`" # b/c
+  fileName="`echo ${f##*/}`" # f
+  targetFile="$target_folder/$subFile"
+  #echo "targetFile=${targetFile}"
+  if [ -f "$targetFile" ]; then
+    md5o="`md5sum $f | awk '{print $1}'`"
+    md5t="`md5sum $targetFile | awk '{print $1}'`"
+
+    if [ "$md5o" == "$md5t" ]; then
+      cmd="rm $f"
+    else
+      echo "origin md5: $md5o target md5: $md5t"
+      cmd="mv $f ${targetFile}.new"
+    fi
+  else
+    cmd="mv $f ${targetFile}"
+  fi
+  echo "run... $cmd"
+  $cmd > merge.log
+  echo "done."
+done
