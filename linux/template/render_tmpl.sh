@@ -26,7 +26,7 @@ argsIndex=0
 output=""
 debug="false"
 
-while getopts 'h:f:a:o:d' OPT; do
+while getopts 'f:a:o:hd' OPT; do
     case $OPT in
         f)
           file="$OPTARG"
